@@ -71,7 +71,7 @@ export # Basic functions
        eq,
        trampoline,
        Continue,
-       @jump
+       @bounce
 
 # Basic functions
 # ===============
@@ -307,15 +307,16 @@ eq  = curry2(==)
 immutable Continue
     thunk
 end
-macro jump(ex)
+macro bounce(ex)
     :(Continue(() -> $(esc(ex))))
 end
-function trampoline(f, args...)
-    res = f(args...)
-    while isa(res, Continue)
-        res = res.thunk()
+function trampoline(c::Continue)
+    while isa(c, Continue)
+        c = c.thunk()
     end
-    res
+    c
 end
+trampoline(f::Function, args...) = trampoline(f(args...))
+trampoline(val) = val
 
 end # module FunctionalUtils

@@ -221,10 +221,10 @@ end
     end
 
     @fact "trampoline" begin
-        even(n) = n == 0 ? true  : @jump odd(n - 1)
-        odd(n)  = n == 0 ? false : @jump even(n - 1)
+        even(n) = n == 0 ? true  : @bounce odd(n - 1)
+        odd(n)  = n == 0 ? false : @bounce even(n - 1)
 
-        trampoline(even, 1000000) => true
+        trampoline(even(1000000)) => true
     end
 
 end
