@@ -174,7 +174,7 @@ splitat(i, seq) = (seq[1:i-1], seq[i:end])
 
 always = constantly(val) = (_...) -> val
 
-pipeline(seed, fs::Function...) = reduce((val, f) -> f(val), seed, fs)
+pipeline(seed, fs...) = reduce((val, f) -> f(val), seed, fs)
 
 function comp(fs::Function...)
     f = fs[end]
@@ -189,23 +189,13 @@ end
 import Base.*
 *(f1::Function, f2::Function) = (args...) -> f1(f2(args...))
 
-function everypred(preds::Function...)
-    function (args...)
-        for pred in preds
-            pred(args...) || return false
-        end
-        return true
-    end
-end
+everypred() = (_...) -> true
+everypred(pred::Function, preds...) =
+    (args...) -> pred(args...) && everypred(preds...)(args...)
 
-function somepred(preds::Function...)
-    function (args...)
-        for pred in preds
-            pred(args...) && return true
-        end
-        return false
-    end
-end
+somepred() = (_...) -> false
+somepred(pred::Function, preds...) =
+    (args...) -> pred(args...) || somepred(preds...)(args...)
 
 splat(f::Function) = (args) -> f(args...)
 unsplat(f::Function) = (args...) -> f(args)
