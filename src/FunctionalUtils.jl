@@ -26,6 +26,7 @@ export # Basic functions
        dropwhile,
        partition,
        partitionall,
+       partitionby,
        mapcat,
        interpose,
        mapkeys,
@@ -266,6 +267,23 @@ reductions(f, seq) = isempty(seq) ? Any[] : reductions(f, seq[1], seq[2:end])
 
 # TODO:
 # partitionby
+
+function partitionby(f, coll)
+    partitioned = typeof(coll)[]
+    min = 1
+    minres = f(coll[1])
+    curr = 2
+    while curr <= length(coll)
+        if f(coll[curr]) == minres
+            curr += 1
+        else
+            push!(partitioned, coll[min:curr-1])
+            min = curr
+            minres = f(coll[min])
+        end
+    end
+    push!(partitioned,coll[min:])
+end
 
 # Higher order functions
 # ======================

@@ -76,6 +76,13 @@ facts("Sequence operations") do
         @fact partitionall(2, [1]) => [[1]]
     end
 
+    context("partitionby") do
+        @fact partitionby(isodd,[1]) => Array{Int}[Int[1]]
+        @fact partitionby(isodd,[1,2]) => Array{Int}[Int[1],Int[2]]
+        @fact partitionby(isodd,[1,1,3,2,4,3]) => Array{Int}[Int[1,1,3],Int[2,4],Int[3]]
+
+    end
+
     context("mapcat") do
         @fact mapcat((x) -> [x], [1,2,3]) => [1,2,3]
     end
